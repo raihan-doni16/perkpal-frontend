@@ -1,11 +1,5 @@
 import type { Actions, PageServerLoad } from './$types';
-import {
-  adminCreateSubcategory,
-  adminDeleteSubcategory,
-  adminListCategories,
-  adminListSubcategories,
-  adminUpdateSubcategory
-} from '$lib/api/admin';
+import { adminCreateLocation, adminDeleteLocation, adminListLocations, adminUpdateLocation } from '$lib/api/admin';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals, fetch, url }) => {
@@ -14,26 +8,18 @@ export const load: PageServerLoad = async ({ locals, fetch, url }) => {
   const page = Number(url.searchParams.get('page') || 1);
   const per_page = Number(url.searchParams.get('per_page') || 10);
   const search = url.searchParams.get('search') || '';
-
-  const [subRes, categoryRes] = await Promise.all([
-    adminListSubcategories(token, fetch, { page, per_page, search }),
-    adminListCategories(token, fetch, { per_page: 1000 })
-  ]);
-
-  return {
-    items: subRes.data,
-    categories: categoryRes.data,
-    meta: subRes.meta,
-    query: { page, per_page, search }
-  };
+  const res = await adminListLocations(token, fetch, { page, per_page, search });
+  return { items: res.data, meta: res.meta, query: { page, per_page, search } };
 };
 
-function parseSubcategoryPayload(fd: FormData) {
+function parseLocationPayload(fd: FormData) {
+  const displayOrder = Number(fd.get('display_order'));
   return {
-    category_id: Number(fd.get('category_id') || 0),
     name: String(fd.get('name') || '').trim(),
     slug: String(fd.get('slug') || '').trim(),
-    is_active: fd.get('is_active') === 'on'
+    description: fd.get('description') ? String(fd.get('description')) : undefined,
+    display_order: Number.isFinite(displayOrder) ? displayOrder : 0,
+    is_active: Boolean(fd.get('is_active'))
   };
 }
 
@@ -42,12 +28,12 @@ export const actions: Actions = {
     try {
       const token = locals.token!;
       const fd = await request.formData();
-      const payload = parseSubcategoryPayload(fd);
-      await adminCreateSubcategory(token, payload, fetch);
+      const payload = parseLocationPayload(fd);
+      await adminCreateLocation(token, payload, fetch);
       return { success: true };
     } catch (error: any) {
-      console.error('Error creating subcategory:', error);
-      let errorMessage = 'Failed to create subcategory';
+      console.error('Error creating location:', error);
+      let errorMessage = 'Failed to create location';
       if (error?.message) {
         errorMessage = error.message;
       }
@@ -59,12 +45,12 @@ export const actions: Actions = {
       const token = locals.token!;
       const fd = await request.formData();
       const id = String(fd.get('id'));
-      const payload = parseSubcategoryPayload(fd);
-      await adminUpdateSubcategory(token, id, payload, fetch);
+      const payload = parseLocationPayload(fd);
+      await adminUpdateLocation(token, id, payload, fetch);
       return { success: true };
     } catch (error: any) {
-      console.error('Error updating subcategory:', error);
-      let errorMessage = 'Failed to update subcategory';
+      console.error('Error updating location:', error);
+      let errorMessage = 'Failed to update location';
       if (error?.message) {
         errorMessage = error.message;
       }
@@ -76,11 +62,11 @@ export const actions: Actions = {
       const token = locals.token!;
       const fd = await request.formData();
       const id = String(fd.get('id'));
-      await adminDeleteSubcategory(token, id, fetch);
+      await adminDeleteLocation(token, id, fetch);
       return { success: true };
     } catch (error: any) {
-      console.error('Error deleting subcategory:', error);
-      let errorMessage = 'Failed to delete subcategory';
+      console.error('Error deleting location:', error);
+      let errorMessage = 'Failed to delete location';
       if (error?.message) {
         errorMessage = error.message;
       }

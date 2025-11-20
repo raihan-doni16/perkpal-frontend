@@ -118,8 +118,10 @@
           <a href={`/journal/${p.slug}`} class="block">
             <div class="relative aspect-[16/10] bg-gray-100">
               <img src={p.og_image || PERK_PLACEHOLDER} alt={p.title} class="w-full h-full object-cover" loading="lazy" />
-              {#if p.category}
-                <div class="absolute top-3 left-3 inline-flex px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">{p.category}</div>
+              {#if p.category || p.category_data}
+                <div class="absolute top-3 left-3 inline-flex px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">
+                  {p.category || p.category_data?.name}
+                </div>
               {/if}
             </div>
             <div class="p-6">

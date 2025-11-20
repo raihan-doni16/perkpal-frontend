@@ -107,6 +107,14 @@
         <svg class="w-4 h-4 text-admin-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
         <span>Categories</span>
       </a>
+      <a href="/admin/locations" class="mt-1 flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/80"
+         class:bg-white={active('/admin/locations')} class:text-admin-text={active('/admin/locations')}>
+        <svg class="w-4 h-4 text-admin-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 21s6-5.373 6-10a6 6 0 0 0-12 0c0 4.627 6 10 6 10z"/>
+          <circle cx="12" cy="11" r="2.5"/>
+        </svg>
+        <span>Locations</span>
+      </a>
       <a href="/admin/subcategories" class="mt-1 flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/80"
          class:bg-white={active('/admin/subcategories')} class:text-admin-text={active('/admin/subcategories')}>
         <svg class="w-4 h-4 text-admin-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 13h12M4 20h8"/></svg>

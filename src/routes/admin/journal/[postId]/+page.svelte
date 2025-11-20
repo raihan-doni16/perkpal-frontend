@@ -11,12 +11,21 @@
 
   const updateEnhance = () => {
     return async ({ result, update }) => {
-      await update();
       if (result.type === 'failure') {
+        await update();
         error = result.data?.error || 'An error occurred';
-      } else if (result.type === 'redirect') {
+        return;
+      }
+      if (result.type === 'success') {
+        await update();
         successModalOpen = true;
         await invalidateAll();
+        return;
+      }
+      if (result.type === 'redirect') {
+        successModalOpen = true;
+        await invalidateAll();
+        return () => {};
       }
     };
   };

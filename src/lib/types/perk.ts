@@ -2,7 +2,7 @@ export interface CategoryRef { id: number; name: string; slug: string }
 export interface SubcategoryRef { id: number; name: string; slug: string }
 
 export type RedeemType = 'external_link' | 'coupon_code' | 'lead_form';
-export type Location = 'malaysia' | 'singapore' | 'global';
+export type Location = string;
 
 export interface PerkListItem {
   id: number;
@@ -12,7 +12,8 @@ export interface PerkListItem {
   partner_name: string;
   partner_logo?: string;
   redeem_type: RedeemType;
-  location: Location | string;
+  location: Location;
+  location_label?: string;
   valid_from?: string;
   valid_until?: string;
   is_featured?: boolean;
@@ -43,4 +44,3 @@ export interface PerkDetail extends PerkListItem {
   created_at?: string;
   updated_at?: string;
 }
-

@@ -12,6 +12,10 @@ export interface JournalItem {
   og_image?: string;
   created_at?: string;
   reading_time?: number;
+  category?: string | null;
+  category_id?: number | null;
+  category_slug?: string | null;
+  category_data?: { id: number; name: string; slug: string } | null;
 }
 
 export async function listJournal(fetcher?: typeof fetch, params: { category?: string; page?: number; per_page?: number } = {}) {

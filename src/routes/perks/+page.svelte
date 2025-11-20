@@ -27,7 +27,7 @@
   <p class="text-sm text-brand-slateGray mt-1">Find and redeem the best perks for your needs.</p>
 
   <div class="mt-6">
-    <PerkFilters categories={data.categories} current={data.current} />
+    <PerkFilters categories={data.categories} locations={data.locations} current={data.current} />
   </div>
 
   {#if data.perks && data.perks.length}

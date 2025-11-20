@@ -1,19 +1,21 @@
 import type { Actions, PageServerLoad } from './$types';
-import { adminCreatePerk, adminListCategories, adminListSubcategories } from '$lib/api/admin';
+import { adminCreatePerk, adminListCategories, adminListSubcategories, adminListLocations } from '$lib/api/admin';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals, fetch }) => {
   const token = locals.token;
   if (!token) throw redirect(302, '/admin/login');
 
-  const [categoriesRes, subcategoriesRes] = await Promise.all([
+  const [categoriesRes, subcategoriesRes, locationsRes] = await Promise.all([
     adminListCategories(token, fetch, { per_page: 200 }),
-    adminListSubcategories(token, fetch)
+    adminListSubcategories(token, fetch),
+    adminListLocations(token, fetch, { per_page: 200 })
   ]);
 
   return {
     categories: categoriesRes.data,
-    subcategories: subcategoriesRes.data
+    subcategories: subcategoriesRes.data,
+    locations: locationsRes.data
   };
 };
 

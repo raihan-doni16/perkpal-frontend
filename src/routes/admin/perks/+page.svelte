@@ -117,7 +117,7 @@
           <tr class="border-t border-admin-border hover:bg-admin-sidebar/50">
             <td class="px-4 py-3 text-brand-richBlack font-medium">{it.title}</td>
             <td class="px-4 py-3">{it.partner_name}</td>
-            <td class="px-4 py-3 capitalize">{it.location}</td>
+            <td class="px-4 py-3 capitalize">{it.location_label ?? it.location}</td>
             <td class="px-4 py-3">
               {#if it.status === 'published'}
                 <span class="inline-flex items-center gap-1 text-green-700 font-medium">Published</span>

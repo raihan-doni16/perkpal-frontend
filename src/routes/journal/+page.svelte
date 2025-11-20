@@ -37,12 +37,12 @@
       on:click={() => setCategory('')}>All</button>
     {#each categories as c}
       <button class="px-4 py-2 rounded-full border text-sm"
-        aria-pressed={currentCategory === c}
-        class:bg-brand-darkGreen={currentCategory === c}
-        class:text-white={currentCategory === c}
-        class:border-brand-darkGreen={currentCategory === c}
-        class:hover\:bg-gray-100={currentCategory !== c}
-        on:click={() => setCategory(c)}>{c}</button>
+        aria-pressed={currentCategory === c.slug}
+        class:bg-brand-darkGreen={currentCategory === c.slug}
+        class:text-white={currentCategory === c.slug}
+        class:border-brand-darkGreen={currentCategory === c.slug}
+        class:hover\:bg-gray-100={currentCategory !== c.slug}
+        on:click={() => setCategory(c.slug)}>{c.name}</button>
     {/each}
   </div>
 </section>

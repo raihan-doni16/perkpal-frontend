@@ -71,7 +71,7 @@
         {#each items as item}
           <tr class="border-t border-admin-border hover:bg-admin-sidebar/50">
             <td class="px-4 py-3 text-brand-richBlack font-medium">{item.title}</td>
-            <td class="px-4 py-3">{item.category || 'Uncategorized'}</td>
+            <td class="px-4 py-3">{item.category || item.category_data?.name || 'Uncategorized'}</td>
             <td class="px-4 py-3">
               {#if item.is_published}
                 <span class="inline-flex items-center gap-1 text-green-700 font-medium">Published</span>

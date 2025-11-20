@@ -6,6 +6,7 @@
   export let data;
   const categories = data.categories ?? [];
   const subcategories = data.subcategories ?? [];
+  const locations = data.locations ?? [];
   const formError = data?.form?.error;
 
   let isFormValid = false;
@@ -30,20 +31,19 @@
     await goto(`/admin/perks?status=${successStatus}&refresh=${Date.now()}`, { replaceState: true });
   };
 
-  const enhancePerkForm = () =>
-    enhance(form, ({ formData }) => {
-      const intent = String(formData.get('intent') || 'save') === 'publish' ? 'publish' : 'save';
-      return async ({ result, update }) => {
-        await update();
-        if (result.type === 'success') {
-          successTitle = successCopy[intent].title;
-          successDescription = successCopy[intent].description;
-          successStatus = intent === 'publish' ? 'published' : 'created';
-          successModalOpen = true;
-          await invalidateAll();
-        }
-      };
-    });
+  const enhancePerkForm = ({ formData }) => {
+    const intent = String(formData.get('intent') || 'save') === 'publish' ? 'publish' : 'save';
+    return async ({ result, update }) => {
+      await update();
+      if (result.type === 'success') {
+        successTitle = successCopy[intent].title;
+        successDescription = successCopy[intent].description;
+        successStatus = intent === 'publish' ? 'published' : 'created';
+        successModalOpen = true;
+        await invalidateAll();
+      }
+    };
+  };
 </script>
 
 <div class="space-y-6">
@@ -60,8 +60,11 @@
   {/if}
 
   <form method="POST" enctype="multipart/form-data" use:enhance={enhancePerkForm} class="space-y-6 rounded-2xl border border-admin-border bg-white p-6">
-    <PerkFormFields {categories} {subcategories} bind:isFormValid />
+    <PerkFormFields {categories} {subcategories} {locations} bind:isFormValid />
     <div class="flex flex-wrap justify-end gap-3">
+      <a href="/admin/perks" class="rounded-lg border border-admin-border px-5 py-2 text-sm font-semibold text-admin-muted">
+        Cancel
+      </a>
       <button
         type="submit"
         name="intent"
@@ -69,14 +72,6 @@
         disabled={!isFormValid}
         class="rounded-lg bg-admin-blue px-5 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
         Save
-      </button>
-      <button
-        type="submit"
-        name="intent"
-        value="publish"
-        disabled={!isFormValid}
-        class="rounded-lg border border-admin-border px-5 py-2 text-sm font-semibold text-admin-muted disabled:cursor-not-allowed disabled:opacity-50">
-        Publish
       </button>
     </div>
   </form>

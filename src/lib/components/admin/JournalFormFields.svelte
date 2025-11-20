@@ -46,24 +46,33 @@
 </script>
 
 <div class="space-y-6">
+  <!-- Method spoofing for Laravel PUT with FormData -->
+  {#if post}
+    <input type="hidden" name="_method" value="PUT" />
+  {/if}
+
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
     <div>
       <label class="block text-sm text-admin-muted" for="title">Title</label>
-      <input id="title" name="title" required bind:value={title} on:input={handleTitleInput}
+      <input id="title" name="title" type="text" required bind:value={title} on:input={handleTitleInput}
              class="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
     </div>
     <div>
       <label class="block text-sm text-admin-muted" for="slug">Slug <span class="text-xs font-normal">(auto-generated from title)</span></label>
-      <input id="slug" name="slug" bind:value={slug} on:input={handleSlugInput}
+      <input id="slug" name="slug" type="text" required bind:value={slug} on:input={handleSlugInput}
              class="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue" />
     </div>
     <div>
-      <label class="block text-sm text-admin-muted" for="category">Category</label>
-      <select id="category" name="category"
+      <label class="block text-sm text-admin-muted" for="category_id">Category</label>
+      <select id="category_id" name="category_id"
               class="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-blue">
         <option value="">No category</option>
         {#each categories as cat}
-          <option value={cat.name} selected={cat.name === post?.category}>{cat.name}</option>
+          <option
+            value={cat.id}
+            selected={String(cat.id) === String(post?.category_id ?? post?.category_data?.id)}>
+            {cat.name}
+          </option>
         {/each}
       </select>
     </div>
@@ -140,6 +149,7 @@
     </div>
     <div class="flex items-center gap-4 text-sm">
       <label class="inline-flex items-center gap-2">
+        <input type="hidden" name="is_published" value="0" />
         <input type="checkbox" name="is_published" value="1" checked={post ? !!post.is_published : true}
                class="h-4 w-4 rounded border-gray-300 text-admin-blue focus:ring-admin-blue" />
         Published

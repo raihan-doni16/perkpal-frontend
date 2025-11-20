@@ -19,12 +19,8 @@ export const actions: Actions = {
         fd.delete('published_at');
       }
       await adminCreateJournalPost(token, fd, fetch);
-      throw redirect(303, '/admin/journal');
+      return { success: true };
     } catch (error: any) {
-      // If it's a redirect, re-throw it
-      if (error?.status === 303 || error?.location) {
-        throw error;
-      }
       return fail(400, { error: error?.message || 'Failed to create journal post' });
     }
   }

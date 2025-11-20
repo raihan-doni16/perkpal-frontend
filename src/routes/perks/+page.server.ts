@@ -1,6 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { listPerks } from '$lib/api/perks';
 import { listCategories } from '$lib/api/categories';
+import { listLocations } from '$lib/api/locations';
 
 export const load: PageServerLoad = async ({ fetch, url }) => {
   const params: Record<string, string> = {};
@@ -10,16 +11,17 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
     if (val) params[key] = val;
   }
 
-  const [perksRes, catsRes] = await Promise.all([
+  const [perksRes, catsRes, locationsRes] = await Promise.all([
     listPerks(params, fetch),
-    listCategories(fetch)
+    listCategories(fetch),
+    listLocations(fetch)
   ]);
 
   return {
     perks: perksRes.data,
     meta: perksRes.meta,
     categories: catsRes.data,
+    locations: locationsRes.data,
     current: params
   };
 };
-

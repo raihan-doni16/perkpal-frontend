@@ -4,9 +4,23 @@
   import ShareButtons from './ShareButtons.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { toastStore } from '$lib/stores/toast';
+  import { PERK_PLACEHOLDER } from '$lib/config';
   export let perk: any;
   let openClaim = false;
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  // Reactive fallback untuk banner image
+  $: bannerImage = (perk?.media?.banner && typeof perk.media.banner === 'string' && perk.media.banner.trim().length > 0)
+    ? perk.media.banner
+    : PERK_PLACEHOLDER;
+
+  // Handle error loading image
+  function handleImageError(e: Event) {
+    const img = e.target as HTMLImageElement;
+    if (img.src !== PERK_PLACEHOLDER) {
+      img.src = PERK_PLACEHOLDER;
+    }
+  }
 
   async function copyCode(code: string) {
     try {
@@ -32,12 +46,32 @@
 </script>
 
 <article class="bg-white rounded-xl shadow-card overflow-hidden">
-  {#if perk?.media?.banner}
-    <img src={perk.media.banner} alt={perk.title} class="w-full h-56 object-cover" />
-  {/if}
+  <div class="relative w-full h-56 bg-gray-100">
+    <img
+      src={bannerImage}
+      alt={perk?.title || 'Perk'}
+      class="w-full h-full object-cover"
+      loading="lazy"
+      on:error={handleImageError}
+    />
+  </div>
   <div class="p-6">
-    <div class="text-sm text-gray-500">{perk.partner_name} • {perk.location}</div>
-    <h1 class="mt-1 text-3xl font-bold text-brand-richBlack">{perk.title}</h1>
+    <div class="flex items-center gap-2 text-sm text-gray-500">
+      {#if perk?.partner_logo || perk?.media?.logo}
+        <img
+          src={perk?.partner_logo || perk?.media?.logo}
+          alt={`${perk.partner_name} logo`}
+          class="w-8 h-8 rounded-full object-cover border border-gray-200"
+          loading="lazy"
+        />
+      {:else}
+        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">
+          {perk?.partner_name?.charAt(0)?.toUpperCase() || '?'}
+        </div>
+      {/if}
+      <span>{perk.partner_name} • {perk.location_label ?? perk.location}</span>
+    </div>
+    <h1 class="mt-2 text-3xl font-bold text-brand-richBlack">{perk.title}</h1>
     {#if perk.short_description}
       <p class="mt-2 text-brand-slateGray">{perk.short_description}</p>
     {/if}

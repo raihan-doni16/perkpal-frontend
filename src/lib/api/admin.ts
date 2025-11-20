@@ -57,10 +57,29 @@ export async function adminCreatePerk(token: string, body: FormData | Record<str
 
 export async function adminUpdatePerk(token: string, id: number | string, body: FormData | Record<string, any>, fetcher = fetch) {
   const isFormData = body instanceof FormData;
+
+  // For FormData with file uploads, use POST with _method=PUT (Laravel method spoofing)
+  if (isFormData) {
+    const res = await fetcher(`${API_BASE}/admin/perks/${id}`, {
+      method: 'POST',
+      headers: bearerHeaders(token),
+      body: body
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ message: 'Failed to update perk' }));
+      const error = new Error(errorData.message || 'Failed to update perk');
+      (error as any).status = res.status;
+      (error as any).details = errorData;
+      throw error;
+    }
+    return res.json() as Promise<ApiItemResponse<any>>;
+  }
+
+  // For JSON body, use regular PUT
   const res = await fetcher(`${API_BASE}/admin/perks/${id}`, {
     method: 'PUT',
-    headers: isFormData ? bearerHeaders(token) : jsonHeaders(token),
-    body: isFormData ? body : JSON.stringify(body)
+    headers: jsonHeaders(token),
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({ message: 'Failed to update perk' }));
@@ -171,10 +190,31 @@ export async function adminCreateJournalPost(token: string, body: FormData | Rec
 
 export async function adminUpdateJournalPost(token: string, id: number | string, body: FormData | Record<string, any>, fetcher = fetch) {
   const isFormData = body instanceof FormData;
+
+  // For FormData with file uploads, use POST with _method=PUT (Laravel method spoofing)
+  // This is because Laravel doesn't support multipart/form-data with PUT natively
+  if (isFormData) {
+    // _method field should already be added in the form component
+    const res = await fetcher(`${API_BASE}/admin/journal/${id}`, {
+      method: 'POST',
+      headers: bearerHeaders(token),
+      body: body
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ message: 'Failed to update journal post' }));
+      const error = new Error(errorData.message || 'Failed to update journal post');
+      (error as any).status = res.status;
+      (error as any).details = errorData;
+      throw error;
+    }
+    return res.json() as Promise<ApiItemResponse<any>>;
+  }
+
+  // For JSON body, use regular PUT
   const res = await fetcher(`${API_BASE}/admin/journal/${id}`, {
     method: 'PUT',
-    headers: isFormData ? bearerHeaders(token) : jsonHeaders(token),
-    body: isFormData ? body : JSON.stringify(body)
+    headers: jsonHeaders(token),
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({ message: 'Failed to update journal post' }));
@@ -249,6 +289,48 @@ export async function adminDeleteCategory(token: string, id: number | string, fe
     (error as any).status = res.status;
     (error as any).details = errorData;
     throw error;
+  }
+}
+
+// Locations
+export async function adminListLocations(token: string, fetcher = fetch, params: Record<string, string | number> = {}) {
+  const qs = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== '') qs.set(k, String(v));
+  });
+  const res = await fetcher(`${API_BASE}/admin/locations${qs.size ? `?${qs}` : ''}`, { headers: bearerHeaders(token) });
+  if (!res.ok) throw new Error('Failed to fetch locations');
+  return res.json() as Promise<ApiListResponse<any>>;
+}
+
+export async function adminCreateLocation(token: string, body: any, fetcher = fetch) {
+  const res = await fetcher(`${API_BASE}/admin/locations`, {
+    method: 'POST',
+    headers: jsonHeaders(token),
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    await throwAdminApiError(res, 'Failed to create location');
+  }
+  return res.json() as Promise<ApiItemResponse<any>>;
+}
+
+export async function adminUpdateLocation(token: string, id: number | string, body: any, fetcher = fetch) {
+  const res = await fetcher(`${API_BASE}/admin/locations/${id}`, {
+    method: 'PUT',
+    headers: jsonHeaders(token),
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    await throwAdminApiError(res, 'Failed to update location');
+  }
+  return res.json() as Promise<ApiItemResponse<any>>;
+}
+
+export async function adminDeleteLocation(token: string, id: number | string, fetcher = fetch) {
+  const res = await fetcher(`${API_BASE}/admin/locations/${id}`, { method: 'DELETE', headers: bearerHeaders(token) });
+  if (!res.ok) {
+    await throwAdminApiError(res, 'Failed to delete location');
   }
 }
 
