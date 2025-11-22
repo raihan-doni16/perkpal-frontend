@@ -78,7 +78,7 @@
         <details class="group p-4 open:bg-gray-50">
           <summary class="flex items-center justify-between cursor-pointer list-none">
             <span class="font-medium text-brand-richBlack">{item.q}</span>
-            <span class="ml-4 text-brand-richBlack group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
+            <span class="ml-4 text-brand-richBlack group-open:rotate-45 transition-transform" aria-hidden="true" role="presentation">+</span>
           </summary>
           <p class="mt-2 text-sm text-brand-slateGray">{item.a}</p>
         </details>

@@ -9,7 +9,7 @@
 
 <!-- Hero -->
 <section class="relative">
-  <div class="absolute inset-0 bg-[url('/images/hero.svg')] bg-cover bg-center" style={`background-image:url('${HERO_IMAGE}')`} aria-hidden="true"></div>
+  <div class="absolute inset-0 bg-cover bg-center" style={`background-image:url('${HERO_IMAGE}')`} aria-hidden="true"></div>
   <div class="absolute inset-0 bg-brand-darkGreen/80"></div>
   <div class="relative container-w py-24 text-white">
     <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Empowering the Independent Workforce</h1>
@@ -86,7 +86,7 @@
       <details class="group p-4 open:bg-gray-50">
         <summary class="flex items-center justify-between cursor-pointer list-none">
           <span class="font-medium text-brand-richBlack">{item.q}</span>
-          <span class="ml-4 text-brand-richBlack group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
+          <span class="ml-4 text-brand-richBlack group-open:rotate-45 transition-transform" aria-hidden="true" role="presentation">+</span>
         </summary>
         <p class="mt-2 text-sm text-brand-slateGray">{item.a}</p>
       </details>

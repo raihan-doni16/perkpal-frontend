@@ -1,96 +1,71 @@
 <script>
-  import StatWidget from '$lib/components/admin/StatWidget.svelte';
-  import LineChart from '$lib/components/admin/LineChart.svelte';
-  import { onMount } from 'svelte';
+  import ActivityFeed from '$lib/components/admin/ActivityFeed.svelte';
 
   export let data;
-  const s = data?.stats || {};
+  const stats = data?.stats || {};
+  const activities = data?.recent_leads || [];
 
-  let selectedMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
-  let perkChartData = [];
-  let leadsChartData = [];
-  let loading = false;
-
-  async function fetchChartData() {
-    loading = true;
-    try {
-      const response = await fetch(`/admin/api/chart-data?month=${selectedMonth}`);
-
-      if (response.ok) {
-        const result = await response.json();
-        perkChartData = result.perks || [];
-        leadsChartData = result.leads || [];
-      } else {
-        console.error('Failed to fetch chart data:', response.status);
-      }
-    } catch (error) {
-      console.error('Failed to fetch chart data:', error);
-    } finally {
-      loading = false;
+  const getStat = (...keys) => {
+    for (const key of keys) {
+      const val = stats?.[key];
+      if (typeof val === 'number' && !Number.isNaN(val)) return val;
+      if (val !== undefined && val !== null) return val;
     }
-  }
+    return 0;
+  };
 
-  onMount(() => {
-    fetchChartData();
-  });
+  const summaryCards = [
+    { label: 'Total Deals', value: getStat('total_deals', 'deals_count', 'total_perks') },
+    { label: 'Total Perks', value: getStat('total_perks', 'perks_count') },
+    { label: 'Total Categories', value: getStat('total_categories', 'categories_count') },
+    { label: 'Total Subcategories', value: getStat('total_subcategories', 'subcategories_count', 'subcategory_count') }
+  ];
 
-  $: if (selectedMonth) {
-    fetchChartData();
-  }
+  const quickActions = [
+    { label: 'Add New Perk', href: '/admin/perks/new' },
+    { label: 'Add New Category', href: '/admin/categories' },
+    { label: 'Add New Subcategory', href: '/admin/subcategories' }
+  ];
 </script>
 
-<!-- Stat row -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
-  <StatWidget label="Total Perks" value={s.total_perks || 0} />
-  <StatWidget label="Active Perks" value={s.active_perks || 0} />
-  <StatWidget label="Total Leads" value={s.total_leads || 0} />
-  <StatWidget label="This Week" value={s.recent_leads || 0} sublabel="Leads" />
-</div>
-
-<!-- Month Filter -->
-<div class="mt-6 flex justify-end">
-  <div class="flex items-center gap-2">
-    <label for="month-filter" class="text-sm font-medium text-gray-700">Filter by Month:</label>
-    <input
-      type="month"
-      id="month-filter"
-      bind:value={selectedMonth}
-      class="border border-admin-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
-    />
-  </div>
-</div>
-
-<!-- Charts Section -->
-<div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <!-- Perks Chart -->
-  <div class="bg-white rounded-2xl shadow-card border border-admin-border p-5">
-    {#if loading}
-      <div class="h-[300px] flex items-center justify-center text-gray-500">
-        Loading...
+<section class="space-y-6">
+  <div class="bg-admin-surface rounded-2xl border border-admin-border p-6 shadow-sm">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-admin-text">Dashboard</h1>
+        <p class="text-sm text-admin-muted mt-1">Quick overview of your CMS.</p>
       </div>
-    {:else}
-      <LineChart
-        data={perkChartData}
-        title="Perks Created"
-        height={300}
-        color="#3b82f6"
-      />
-    {/if}
-  </div>
+    </div>
 
-  <!-- Leads Chart -->
-  <div class="bg-white rounded-2xl shadow-card border border-admin-border p-5">
-    {#if loading}
-      <div class="h-[300px] flex items-center justify-center text-gray-500">
-        Loading...
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+      {#each summaryCards as card}
+        <div class="bg-white rounded-xl border border-admin-border shadow-card p-5">
+          <div class="text-sm text-admin-muted">{card.label}</div>
+          <div class="mt-2 text-3xl font-semibold text-admin-text">{card.value}</div>
+        </div>
+      {/each}
+    </div>
+
+    <div class="mt-6">
+      <h2 class="text-lg font-semibold text-admin-text">Recent Activities</h2>
+      <div class="mt-3 bg-white rounded-xl border border-admin-border shadow-card p-4">
+        <ActivityFeed items={activities} />
       </div>
-    {:else}
-      <LineChart
-        data={leadsChartData}
-        title="Leads Submitted"
-        height={300}
-        color="#10b981"
-      />
-    {/if}
+    </div>
+
+    <div class="mt-6">
+      <h2 class="text-lg font-semibold text-admin-text">Quick Actions</h2>
+      <div class="mt-3 flex flex-wrap gap-3">
+        {#each quickActions as action, i}
+          <a
+            href={action.href}
+            class={`inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-sm shadow-sm border border-admin-border
+              bg-brand-darkGreen text-white hover:brightness-110`}
+          >
+            {action.label}
+          </a>
+        {/each}
+      </div>
+    </div>
   </div>
-</div>
+</section>

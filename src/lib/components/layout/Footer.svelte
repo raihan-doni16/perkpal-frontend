@@ -13,6 +13,6 @@
       <a href="/terms" class="hover:text-white">Terms of Service</a>
       <a href="/privacy" class="hover:text-white">Privacy Policy</a>
     </nav>
-    <div class="ml-auto">&copy; {new Date().getFullYear()} {siteName}. All rights reserved.</div>
+    <div class="ml-auto">&copy; {new Date().getFullYear()} PerkPal. All rights reserved.</div>
   </div>
 </footer>

@@ -55,17 +55,17 @@
   <p class="mt-2 text-center text-brand-slateGray">It's as easy as 1, 2, 3.</p>
   <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
     <div class="text-center bg-white rounded-xl shadow-card p-6">
-      <div class="mx-auto w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-xl">🔎</div>
+      <div class="mx-auto w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-xl" aria-hidden="true">🔎</div>
       <div class="mt-3 font-semibold">1. Browse Perks</div>
       <p class="mt-1 text-sm text-brand-slateGray">Explore our curated marketplace of exclusive deals.</p>
     </div>
     <div class="text-center bg-white rounded-xl shadow-card p-6">
-      <div class="mx-auto w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-xl">✨</div>
+      <div class="mx-auto w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-xl" aria-hidden="true">✨</div>
       <div class="mt-3 font-semibold">2. Select a Deal</div>
       <p class="mt-1 text-sm text-brand-slateGray">Choose the offer that best fits your needs.</p>
     </div>
     <div class="text-center bg-white rounded-xl shadow-card p-6">
-      <div class="mx-auto w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-xl">🎟️</div>
+      <div class="mx-auto w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-xl" aria-hidden="true">🎟️</div>
       <div class="mt-3 font-semibold">3. Redeem & Save</div>
       <p class="mt-1 text-sm text-brand-slateGray">Follow the link to the partner’s site and enjoy.</p>
     </div>
